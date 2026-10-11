@@ -67,3 +67,8 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+.env
+**/.env
+
+/website_files/.env
