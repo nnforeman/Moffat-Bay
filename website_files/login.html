@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login / Register - Moffat Bay Lodge</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Styles that only this page needs -->
+  <style>
+    .auth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 440px));
+      gap: 3rem;
+      justify-content: center;
+      align-items: start;
+    }
+    .auth-panel h2 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+      font-weight: normal;
+      text-align: center;
+    }
+    .auth-panel .card { min-height: 420px; }
+    .auth-panel .form-row label { flex-basis: 7rem; }
+
+    @media (max-width: 800px) {
+      .auth-grid { grid-template-columns: minmax(0, 440px); }
+    }
+  </style>
+</head>
+<body>
+{% set form = form or {} %}
+
+  <header class="site-header">
+    <a class="brand" href="index.html">Moffat Bay Lodge</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="attractions.html">Attractions</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+    {% if session.get("first_name") %}
+    <a class="auth-link" href="/logout">Logout ({{ session["first_name"] }})</a>
+    {% else %}
+    <a class="auth-link" href="/login">Login / Register</a>
+    {% endif %}
+  </header>
+
+  <div class="page-layout">
+    <main class="page-main">
+      <div class="auth-grid">
+
+        <!-- Login -->
+        <section class="auth-panel" aria-labelledby="login-heading">
+          <h2 id="login-heading">Login</h2>
+          <form class="card" id="login-form" action="/login" method="post">
+            <div class="form-row" style="margin-top: 3rem;">
+              <label for="login-email">E-Mail:</label>
+              <input type="email" id="login-email" name="email" autocomplete="email" required>
+            </div>
+            <div class="form-row">
+              <label for="login-password">Password:</label>
+              <input type="password" id="login-password" name="password" autocomplete="current-password" required>
+            </div>
+            <p class="form-error" role="alert">{{ login_error or "" }}</p>
+            <div class="form-actions" style="margin-top: 2rem;">
+              <button class="btn btn--primary" type="submit">Login</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Register -->
+        <section class="auth-panel" aria-labelledby="register-heading">
+          <h2 id="register-heading">Register</h2>
+          <form class="card" id="register-form" action="/register" method="post">
+            <div class="form-row">
+              <label for="first-name">First Name:</label>
+              <input type="text" id="first-name" name="first_name" value="{{ form.first_name }}" autocomplete="given-name" required>
+            </div>
+            <div class="form-row">
+              <label for="last-name">Last Name:</label>
+              <input type="text" id="last-name" name="last_name" value="{{ form.last_name }}" autocomplete="family-name" required>
+            </div>
+            <div class="form-row">
+              <label for="reg-email">E-Mail:</label>
+              <input type="email" id="reg-email" name="email" value="{{ form.email }}" autocomplete="email" required>
+            </div>
+            <div class="form-row">
+              <label for="reg-phone">Phone:</label>
+              <input type="tel" id="reg-phone" name="telephone" value="{{ form.telephone }}" autocomplete="tel" maxlength="20" placeholder="314-555-0101" required>
+            </div>
+            <div class="form-row">
+              <label for="reg-password">Password:</label>
+              <input type="password" id="reg-password" name="password" autocomplete="new-password" minlength="8" placeholder="8+ characters" required>
+            </div>
+            <p class="form-error" role="alert">{{ register_error or "" }}</p>
+            <div class="form-actions" style="margin-top: 1rem;">
+              <button class="btn btn--primary" type="submit">Register</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+    </main>
+
+    <aside class="sidebar" aria-label="Quick links">
+      <a class="side-btn side-btn--primary" href="available-lodges.html"><span>Book Your Stay</span></a>
+      <a class="side-btn" href="reservation-lookup.html"><span>Reservations</span></a>
+
+      <h2 class="sidebar-heading">Explore Joviedsa Island</h2>
+      <div class="tile-grid">
+        <a class="tile" href="attractions.html">
+          <img src="images/Hiking.png" alt="" onerror="this.style.display='none'">
+          <span class="tile-label">Hiking</span>
+        </a>
+        <a class="tile" href="attractions.html">
+          <img src="images/Whale Watching.png" alt="" onerror="this.style.display='none'">
+          <span class="tile-label">Whale Watching</span>
+        </a>
+        <a class="tile" href="attractions.html">
+          <img src="images/Kayaking.png" alt="" onerror="this.style.display='none'">
+          <span class="tile-label">Kayaking</span>
+        </a>
+        <a class="tile" href="attractions.html">
+          <img src="images/Suba Diving.png" alt="" onerror="this.style.display='none'">
+          <span class="tile-label">Scuba Diving</span>
+        </a>
+      </div>
+
+      <a class="side-btn side-btn--tall" href="attractions.html"><span>View Attractions</span></a>
+    </aside>
+  </div>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="index.html">Moffat Bay Lodge</a>
+    <nav aria-label="Footer">
+      <a href="reservation-lookup.html">Reservations</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+  </footer>
+
+
+</body>
+</html>
