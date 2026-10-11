@@ -1,0 +1,452 @@
+/* ==========================================================================
+   Moffat Bay Lodge - shared styles
+   Covers everything that repeats across all pages: header/nav, page layout,
+   page titles, the right-hand sidebar (booking buttons + attraction tiles),
+   footer, and common buttons / form fields / cards.
+
+   Expected page structure:
+
+   <body>
+     <header class="site-header">
+       <a class="brand" href="index.html">Moffat Bay Lodge</a>
+       <nav class="site-nav" aria-label="Main">
+         <a href="index.html">Home</a>
+         <a href="about.html" aria-current="page">About Us</a>
+         <a href="attractions.html">Attractions</a>
+         <a href="contact.html">Contact Us</a>
+       </nav>
+       <a class="auth-link" href="login.html">Login / Register</a>
+     </header>
+
+     <div class="page-layout">
+       <main class="page-main">
+         <h1 class="page-title">...</h1>
+         ...page content...
+       </main>
+
+       <aside class="sidebar" aria-label="Quick links">
+         <a class="side-btn side-btn--primary" href="#">Book Your Stay</a>
+         <a class="side-btn" href="#">Reservations</a>
+         <h2 class="sidebar-heading">Explore Joviedsa Island</h2>
+         <div class="tile-grid">
+           <a class="tile" href="#">
+             <img src="images/hiking.jpg" alt="">
+             <span class="tile-label">Hiking</span>
+           </a>
+           ...3 more tiles...
+         </div>
+         <a class="side-btn side-btn--tall" href="#">View Attractions</a>
+       </aside>
+     </div>
+
+     <footer class="site-footer">
+       <a class="footer-brand" href="index.html">Moffat Bay Lodge</a>
+       <nav aria-label="Footer">
+         <a href="reservations.html">Reservations</a>
+         <a href="contact.html">Contact Us</a>
+       </nav>
+     </footer>
+   </body>
+   ========================================================================== */
+
+
+/* ---------- Design tokens ---------- */
+:root {
+  --green-900: #1f3a30;
+  --green-800: #27473b;      /* header, footer, primary buttons */
+  --green-700: #35604f;
+  --cream:     #f4f0e8;      /* page background */
+  --paper:     #ffffff;
+  --ink:       #1e1e1e;
+  --ink-soft:  #4a4a4a;
+  --line:      #cfc9bd;
+  --link:      #4ba3e8;      /* links that sit on green */
+  --link-on-light: #1a6fb5;  /* links that sit on cream/white */
+  --focus:     #f2a900;
+
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-sans:  "Segoe UI", Arial, Helvetica, sans-serif;
+
+  --sidebar-w: 300px;
+  --radius: 4px;
+}
+
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--link-on-light); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+
+/* ---------- Header / navigation ---------- */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 2.5rem;
+  min-height: 64px;
+  background: var(--green-800);
+  color: #fff;
+}
+
+.brand {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+  gap: 0.25rem;
+  margin-left: 4rem;
+}
+
+.site-nav a {
+  display: flex;
+  align-items: center;
+  padding: 0 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-nav a:hover { background: var(--green-700); }
+
+/* current page */
+.site-nav a[aria-current="page"] {
+  background: var(--green-900);
+  box-shadow: inset 0 -3px 0 var(--link);
+}
+
+.auth-link {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--link);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.auth-link:hover { text-decoration: underline; }
+
+
+/* ---------- Page layout (content + sidebar) ---------- */
+.page-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
+  gap: 2rem;
+  align-items: start;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+}
+
+.page-main { min-width: 0; }
+
+.page-title {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: normal;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.page-subtitle {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: normal;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Sidebar & general call-to-action buttons: outlined by default */
+.side-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 2px solid var(--green-800);
+  border-radius: var(--radius);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+}
+
+.side-btn::before { content: ""; width: 1ch; }          /* balances the arrow so the label stays centred */
+.side-btn::after  { content: ">"; font-family: var(--font-sans); font-size: 1.4rem; line-height: 1; }
+.side-btn > span  { flex: 1; }
+
+.side-btn:hover { background: #ecefe9; }
+
+/* Filled variant (Book Your Stay) */
+.side-btn--primary {
+  background: var(--green-800);
+  color: #fff;
+}
+.side-btn--primary:hover { background: var(--green-700); }
+
+/* Larger variant (View Attractions) */
+.side-btn--tall {
+  margin-top: 0.5rem;
+  padding-block: 1.1rem;
+  font-size: 1.05rem;
+}
+
+.sidebar-heading {
+  margin: 1rem 0 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: normal;
+}
+
+/* Attraction picture tiles */
+.tile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #d9d4c8;
+  text-decoration: none;
+}
+
+.tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tile-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  background: rgba(15, 15, 15, 0.88);
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.tile-label::after { content: ">"; font-family: var(--font-sans); }
+
+.tile:hover .tile-label { background: var(--green-800); }
+
+
+/* ---------- Footer ---------- */
+.site-footer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.1rem 2.5rem;
+  background: var(--green-800);
+  color: #fff;
+}
+
+.site-footer .footer-brand {
+  font-size: 1.05rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-footer nav { display: flex; gap: 1.75rem; }
+
+.site-footer nav a {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--link);
+  text-decoration: none;
+}
+
+.site-footer nav a:hover { text-decoration: underline; }
+
+
+/* ---------- Shared components ---------- */
+
+/* Buttons (Login, Register, Submit, Confirm, Cancel, Book Now ...) */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.75rem;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--green-800);
+  border-radius: var(--radius);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover { background: #ecefe9; }
+
+.btn--primary {
+  background: var(--green-800);
+  color: #fff;
+}
+.btn--primary:hover { background: var(--green-700); }
+
+.btn--large { padding: 0.85rem 2.5rem; font-size: 1.2rem; }
+
+/* Cards / panels (login + register boxes, contact form, reservation details) */
+.card {
+  padding: 2rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.card-title {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+  font-weight: normal;
+  text-align: center;
+}
+
+/* Form rows: label on the left, input on the right */
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-row label {
+  flex: 0 0 8rem;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea,
+.field {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  background: #fff;
+  border: 1px solid #8a8a8a;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.form-row textarea { min-height: 8rem; resize: vertical; }
+
+/* Label / value lines in reservation details cards */
+.detail-list { margin: 0; padding: 0; list-style: none; }
+.detail-list li { padding: 0.5rem 0; color: var(--ink-soft); }
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .site-nav {
+    order: 3;
+    flex-basis: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+  }
+
+  .site-nav a { padding: 0.6rem 0.8rem; }
+
+  .page-layout { padding: 1.25rem 1rem 2rem; }
+
+  .form-row { flex-direction: column; align-items: stretch; }
+  .form-row label { flex: none; text-align: left; }
+
+  .site-footer { flex-wrap: wrap; padding: 1rem; gap: 0.75rem 1.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+
+/* ---------- Photo placeholder utility ----------
+   Wrap an <img> in .photo; if the image file is missing the beige box stays. */
+.photo {
+  position: relative;
+  overflow: hidden;
+  background: #d9d4c8;
+}
+.photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
