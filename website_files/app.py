@@ -3,10 +3,13 @@ Moffat Bay Lodge - login and registration (no JavaScript needed).
 Run with:  python app.py   then open http://localhost:5000
 """
 import os
+from datetime import date
+from functools import wraps
+from urllib.parse import quote
 
 import mysql.connector
 from dotenv import load_dotenv
-from flask import Flask, abort, redirect, render_template, request, send_from_directory, session
+from flask import Flask, abort, flash, redirect, render_template, request, send_from_directory, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv()  # reads your .env file
@@ -23,6 +26,34 @@ def get_db():
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME"),
     )
+
+
+# ---------------------------------------------------------------- helpers
+def query(sql, params=()):
+    """Run a SELECT and return all rows as dictionaries"""
+    db = get_db()
+    cur = db.cursor(dictionary=True)
+    try:
+        cur.execute(sql, params)
+        return cur.fetchall()
+    finally:
+        cur.close()
+        db.close()
+
+
+def login_required(view):
+    """Send logged-out visitors to the login page, then bring them back"""
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if "customer_id" not in session:
+            return redirect("/login?next=" + quote(request.full_path.rstrip("?")))
+        return view(*args, **kwargs)
+    return wrapped
+
+
+def safe_next(value):
+    """Only allow redirects to pages on this site"""
+    return value if value.startswith("/") and not value.startswith("//") else "/"
 
 
 # ---------------------------------------------------------------- pages
@@ -45,6 +76,71 @@ def login_page():
     return render_template("login.html")
 
 
+# ---------------------------------------------------------------- booking
+def render_booking(lodge_id, error=None):
+    lodges = query("SELECT lodge_id, lodge_name, lodge_description, lodge_image FROM Lodge WHERE lodge_id = %s",
+        (lodge_id,))
+    if not lodges:
+        abort(404)
+    rooms = query("SELECT room_type_id, room_size, nightly_rate FROM Room_Type ORDER BY nightly_rate")
+    return render_template("lodge-reservation.html", lodge=lodges[0], rooms=rooms,
+        today=date.today().isoformat(), error=error, form=request.form)
+
+
+@app.route("/lodge-reservation", methods=["GET", "POST"])
+@app.route("/lodge-reservation.html", methods=["GET", "POST"])
+@login_required
+def lodge_reservation():
+    lodge_id = request.args.get("lodge", type=int)
+    if not lodge_id:
+        return redirect("/lodge")
+    if request.method == "GET":
+        return render_booking(lodge_id)
+    
+    try:
+        room_type_id = int(request.form["room_type_id"])
+        guests = int(request.form["guests"])
+        check_in = date.fromisoformat(request.form["check_in"])
+        check_out = date.fromisoformat(request.form["check_out"])
+    except (KeyError, ValueError):
+        return render_booking(lodge_id, "Please choose your dates, room, and number of guests.")
+    if check_in < date.today() or check_out <= check_in:
+        return render_booking(lodge_id, "Please choose valid dates (departure must be after arrival).")
+    if not 1 <= guests <= 4:
+        return render_booking(lodge_id, "Please choose between 1 and 4 guests.")
+    
+    db = get_db()
+    cur = db.cursor(dictionary=True)
+    try:
+        cur.execute("SELECT lodge_id FROM Lodge WHERE lodge_id = %s FOR UPDATE", (lodge_id,))
+        if not cur.fetchone():
+            abort(404)
+        
+        cur.execute("SELECT nightly_rate FROM Room_Type WHERE room_type_id = %s", (room_type_id,))
+        room = cur.fetchone()
+        if not room:
+            return render_booking(lodge_id, "Please choose a room.")
+        
+        cur.execute("SELECT 1 FROM Reservation WHERE lodge_id = %s AND room_type_id = %s "
+            "AND check_in_date < %s AND check_out_date > %s LIMIT 1",
+            (lodge_id, room_type_id, check_out, check_in))
+        if cur.fetchone():
+            return render_booking(lodge_id, "Sorry, that room is already booked for those dates.")
+        
+        total = room["nightly_rate"] * (check_out - check_in).days
+        cur.execute("INSERT INTO Reservation (customer_id, lodge_id, room_type_id, number_of_guests, "
+            "check_in_date, check_out_date, total_cost) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (session["customer_id"], lodge_id, room_type_id, guests, check_in, check_out, total))
+        db.commit()
+        new_id = cur.lastrowid
+    finally:
+        cur.close()
+        db.close()
+    
+    flash(f"Your reservation is confirmed! Your reservation number is {new_id}.")
+    return redirect(f"/lodge-reservation?lodge={lodge_id}")
+    
+    
 # ---------------------------------------------------------------- register
 @app.route("/register", methods=["POST"])
 def register():

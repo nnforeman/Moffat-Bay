@@ -10,7 +10,8 @@ CREATE TABLE Customer (
 CREATE TABLE Lodge (
     lodge_id INT PRIMARY KEY,
     lodge_name VARCHAR(100),
-    lodge_description VARCHAR(500)
+    lodge_description VARCHAR(500),
+	lodge_image VARCHAR(100)
 );
 
 CREATE TABLE Room_Type (
@@ -20,7 +21,7 @@ CREATE TABLE Room_Type (
 );
 
 CREATE TABLE Reservation (
-    reservation_id INT PRIMARY KEY,
+    reservation_id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
     lodge_id INT,
     room_type_id INT,
@@ -41,11 +42,37 @@ VALUES
     (3, 'Sophia', 'Mitchell', 'sophia.mitchell@example.com', '573-555-0103', 'SophiaPass789');
 
 INSERT INTO Lodge
-    (lodge_id, lodge_name, lodge_description)
+    (lodge_id, lodge_name, lodge_description, lodge_image)
 VALUES
-    (1, 'Pine Ridge Lodge', 'A peaceful mountain lodge surrounded by pine forest and hiking trails.'),
-    (2, 'Lakeview Lodge', 'A lakeside lodge offering scenic water views and easy access to boating.'),
-    (3, 'Cedar Creek Lodge', 'A rustic lodge near a creek with comfortable rooms and outdoor recreation.');
+    (1, 'Cedar Hollow Lodge', "Tucked beneath old-growth cedars just a short walk from the pool, "
+                    "this lodge blends rustic timber charm with modern comfort. "
+                    "Wood-burning fireplaces, wraparound porches, and a view of the "
+                    "strait make this the island's coziest retreat.",
+		'/images/CedarStrait.png'),
+    (2, 'Whistling Strait Inn', "Perched on the bluffs overlooking Joviedsa's windswept northern "
+                    "coast, this inn is known for its floor-to-ceiling windows and "
+                    "front-row seats to passing orcas. Perfect for early risers who "
+                    "don't mind a stiff sea breeze.",
+		'/images/WhistlingStrait.png'),
+    (3, 'Fembrook Retreat', "Surrounded by moss-draped forest trails and a quiet freshwater "
+                    "creek, Fembrook is the island's go-to for hikers and hammock "
+                    "campers alike. Each cabin comes with its own outdoor cooking "
+                    "tub.",
+		'/images/Fembrook.png'),
+	(4, 'Harbor Light Lodge', "Set right in Joviedsa's small fishing village, this lodge puts "
+                    "guests steps from the docks, local seafood shacks, and the weekly "
+                    "farmers market. Rooms feature nautical decor and views of the "
+                    "working harbor.",
+		'/images/HarborLight.png'),
+	(5, 'Ravenwood Lodge', "A dark, moodier option nestled deep in the island's interior "
+                    "forest, Ravenwood leans into rustic-luxury with stone fireplaces, "
+                    "exposed timber beams, and a reputation for spotting the resident "
+                    "raven flock at dusk.",
+		'/images/Ravenwood.png'),
+	(6, 'Tidepool Bluff Cottages', "A cluster of small, private cottages along the southern shoreline, "
+                    "each with a private path down to tide pools teeming with starfish "
+                    "and anemones. Popular with families and low-key beach lovers.",
+		'/images/TidepoolBluff.png');
 
 INSERT INTO Room_Type
     (room_type_id, room_size, nightly_rate)

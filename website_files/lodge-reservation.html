@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Book Your Stay - Moffat Bay Lodge</title>
+	<link rel="stylesheet" href="styles.css">
+	
+	<style>
+		.booking {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: 2.5rem;
+			align-items: start;
+		}
+		.booking-lodge { margin: 0; text-align: center; }
+		.booking-photo { aspect-ratio: 4 / 3; }
+		.booking-lodge figcaption { margin-top: 0.75rem; font-size: 1.15rem; }
+		
+		.booking-form { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+		.booking-form > label {
+			display: flex; flex-direction: column; gap: 0.25rem;
+			width: 100%; max-width: 340px;
+			font-family: var(--font-sans); font-size: 0.9rem; color: var(--ink-soft);
+		}
+		.booking-form input[type="date"] {
+			padding: 0.5rem 0.75rem; font: inherit; color: var(--ink);
+			border: 1px solid var(--ink-soft); background: var(--paper);
+		}
+		
+		.rooms { width: 100%; max-width: 340px; margin: 0; padding: 0; border: 2px solid var(--ink-soft); background: var(--paper); }
+		.rooms label {
+			display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.55rem 0.75rem;
+			cursor: pointer; border-bottom: 1px solid var(--line); font-size: 0.95rem;
+		}
+		.rooms label:last-child { border-bottom: 0; }
+		.rooms label:has(input:checked) { background: #ecefe9; }
+		.rooms input { position: absolute; opacity: 0; }
+		.rooms label:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: -3px; }
+		.rooms label span:first-of-type { flex: 1; }
+		
+		.guests { 
+			margin: 0; padding: 0.5rem 0.75rem; border: 1px solid var(--ink-soft); background: var(--paper);
+			font-family: var(--font-sans); font-size: 0.85rem;
+		}
+		.guests label { display: block; cursor: pointer; }
+		
+		.form-success {
+			margin: 0; padding: 0.6rem 0.75rem; width: 100%; max-width: 340px;
+			background: #ecefe9; border: 1px solid var(--ink-soft); color: var(--ink);
+			font-family: var(--font-sans); font-size: 0.95rem; text-align: center;
+		}
+		
+		@media (max-width: 800px) { .booking { grid-template-columns: 1fr; } }
+	</style>
+</head>
+<body>
+	
+	<header class="site-header">
+		<a class="brand" href="index.html">Moffat Bay Lodge</a>
+		<nav class="site-nav" aria-label="Main">
+			<a href="index.html">Home</a>
+			<a href="about.html">About Us</a>
+			<a href="attractions.html">Attractions</a>
+			<a href="contact.html">Contact Us</a>
+		</nav>
+		
+		{% if session.get("customer_id") %}
+		<a class="auth-link" href="/logout">
+			Welcome, {{ session.get("first_name") }} | Logout
+		</a>
+		{% else %}
+		<a class="auth-link" href="/login">Login / Register</a>
+		{% endif %}
+	</header>
+	
+	<div class="page-layout">
+		<main class="page-main">
+			<div class="booking">
+				
+				<figure class="booking-lodge">
+					<div class="photo booking-photo">
+						<img src="{{ lodge.lodge_image }}" alt="{{ lodge.lodge_name }}" onerror="this.style.display='none'">
+					</div>
+					<figcaption>{{ lodge.lodge_name }}</figcaption>
+					<p>{{ lodge.lodge_description }}</p>
+				</figure>
+				
+				<form class="booking-form" method="post" action="/lodge-reservation?lodge={{ lodge.lodge_id }}">
+					<label>Arrival
+						<input type="date" name="check_in" min="{{ today }}" value="{{ form.check_in }}" required>
+					</label>
+					<label>Departure
+						<input type="date" name="check_out" min="{{ today }}" value="{{ form.check_out }}" required>
+					</label>
+					
+					<fieldset class="rooms">
+						<legend class="sr-only">Room type</legend>
+						{% for r in rooms %}
+						<label>
+							<input type="radio" name="room_type_id" value="{{ r.room_type_id }}" required
+								{% if form.room_type_id == r.room_type_id|string %}checked{% endif %}>
+							<span>{{ r.room_size|title }}</span>
+							<span>${{ '%.2f'|format(r.nightly_rate) }}/night</span>
+						</label>
+						{% endfor %}
+					</fieldset>
+					
+					<fieldset class="guests">
+						<legend class="sr-only">Number of guests</legend>
+						{% for n in [1, 2, 3, 4] %}
+						<label><input type="radio" name="guests" value="{{ n }}"
+							{% if (form.guests or '2') == n|string %}checked{% endif %}> {{ n }} Guest{{ 's' if n > 1 }}</label>
+						{% endfor %}
+					</fieldset>
+					
+					{% for message in get_flashed_messages() %}
+					<p class="form-success" role="status">{{ message }}</p>
+					{% endfor %}
+					
+					{% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+					
+					<button class="btn btn--primary btn--large" type="submit">Book Now</button>
+				</form>
+			</div>
+		</main>
+		
+		<aside class="sidebar" aria-label="Quick links">
+			<a class="side-btn side-btn--primary" href="lodge.html"><span>Book Your Stay</span></a>
+			<a class="side-btn" href="reservation-lookup.html"><span>Reservations</span></a>
+			
+			<h2 class="sidebar-heading">Explore Joviedsa Island</h2>
+			<div class="tile-grid">
+				<a class="tile" href="attractions.html">
+					<img src="images/Hiking.png" alt="" onerror="this.style.display='none'">
+					<span class="tile-label">Hiking</span>
+				</a>
+				<a class="tile" href="attractions.html">
+					<img src="images/Whale Watching.png" alt="" onerror="this.style.display='none'">
+					<span class="tile-label">Whale Watching</span>
+				</a>
+				<a class="tile" href="attractions.html">
+					<img src="images/Kayaking.png" alt="" onerror="this.style.display='none'">
+					<span class="tile-label">Kayaking</span>
+				</a>
+				<a class="tile" href="attractions.html">
+					<img src="images/Scuba Diving.png" alt="" onerror="this.style.display='none'">
+					<span class="tile-label">Scuba Diving</span>
+				</a>
+			</div>
+			
+			<a class="side-btn side-btn--tall" href="attractions.html"><span>View Attractions</span></a>
+		</aside>
+	</div>
+	
+	<footer class="site-footer">
+		<a class="footer-brand" href="/">Moffat Bay Lodge</a>
+		<nav aria-label="Footer">
+		<a href="/about.html">About Us</a>
+		<a href="/attractions.html">Attractions</a>
+		<a href="/contact.html">Contact Us</a>
+		<a href="/login">Reservations</a>
+		</nav>
+	</footer>
+	
+</body>
+</html>
