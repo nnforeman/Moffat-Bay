@@ -457,3 +457,101 @@ a { color: var(--link-on-light); }
     object-position: center;
     display: block;
 }
+
+/* ---------- Lodge listing (lodges page only) ---------- */
+.lodge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 250px));
+  justify-content: center;
+  column-gap: 10rem;
+  row-gap: 1.5rem;
+  padding: 2.5rem 0 1.5rem;
+  align-content: start;
+}
+
+.lodge-card {
+  min-width: 0;
+  align-self: start;
+}
+
+.lodge-image-placeholder {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  aspect-ratio: 1 / 0.75;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Diagonal cross shown until real lodge photos are added. */
+.lodge-image-placeholder::before,
+.lodge-image-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 1px;
+  background: #ccc;
+}
+
+.lodge-image-placeholder::before {
+  transform: translate(-50%, -50%) rotate(36.9deg);
+}
+
+.lodge-image-placeholder::after {
+  transform: translate(-50%, -50%) rotate(-36.9deg);
+}
+
+.lodge-card h2 {
+    max-width: 250px;
+    margin: 0.25rem 0 0.3rem;
+    font-size: 1.2rem;
+    font-weight: normal;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.lodge-card h2 a {
+    color: #24749a;
+    text-decoration: underline;
+}
+
+.lodge-card p {
+    max-width: 250px;
+    margin: 0;
+    padding: 0.10rem 0;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.15;
+    text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .lodge-grid {
+    column-gap: 1.25rem;
+    padding-left: 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .lodge-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .lodge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lodge-image-placeholder,
+  .lodge-card p {
+    max-width: 100%;
+  }
+}
+

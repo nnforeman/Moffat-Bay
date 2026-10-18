@@ -153,17 +153,16 @@
           Relax at the lodge, explore the outdoors, and create
           unforgettable memories in the heart of the San Juan Islands.
         </p>
-        <a class="side-btn side-btn--primary"
-           href="/login">
-          <span>Book Your Stay</span>
-        </a>
+          <a class="side-btn side-btn--primary" href="{{ '/lodge' if session.get('customer_id') else '/login' }}">
+              <span>Book Your Stay</span>
+          </a>
       </section>
     </main>
 
     <aside class="sidebar" aria-label="Quick links">
-      <a class="side-btn side-btn--primary" href="/login">
-        <span>Book Your Stay</span>
-      </a>
+        <a class="side-btn side-btn--primary" href="{{ '/lodge' if session.get('customer_id') else '/login' }}">
+            <span>Book Your Stay</span>
+        </a>
 
       <a class="side-btn" href="/login">
         <span>Reservations</span>

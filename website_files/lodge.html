@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moffat Bay Lodge | Lodges</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .page-layout {
+          max-width: none;
+          padding: 0 1.5rem 0 0;
+          gap: 2rem;
+        }
+
+        .hero {
+          position: relative;
+          min-height: 465px;
+          background: url("/images/LodgeHero.png") center / cover no-repeat;
+          text-align: center;
+          padding: 1.2rem 2rem;
+          color: #111;
+        }
+
+        .hero-eyebrow {
+          margin: 0;
+          font-family: Arial, sans-serif;
+          font-size: 1.15rem;
+          text-transform: uppercase;
+        }
+
+        .hero h1 {
+          font-size: clamp(2.5rem, 5vw, 4rem);
+          font-weight: normal;
+          line-height: 1.05;
+          max-width: 650px;
+          margin: 1.2rem auto;
+        }
+
+        .hero-tagline {
+          font-size: 1.6rem;
+          margin: 0;
+        }
+
+        .welcome-section {
+          text-align: center;
+          padding: 0.5rem 1.5rem 1rem;
+        }
+
+        .welcome-section h2 {
+          margin: 0 0 0.5rem;
+          font-size: 1.65rem;
+          font-weight: normal;
+        }
+
+        .welcome-section p {
+          max-width: 570px;
+          margin: 0 auto 0.75rem;
+          line-height: 1.3;
+        }
+
+        .welcome-section .side-btn {
+          max-width: 280px;
+          margin: auto;
+        }
+
+        .sidebar {
+          padding-top: 2rem;
+        }
+
+        @media (max-width: 1000px) {
+          .page-layout {
+            padding: 0 1rem 2rem;
+          }
+
+          .sidebar {
+            padding-top: 0;
+          }
+        }
+
+        @media (max-width: 700px) {
+          .hero {
+            min-height: 370px;
+          }
+        }
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 45%;
+        padding-right: 3%;
+    }
+
+    .hero-eyebrow {
+        margin: 0 0 8px;
+    }
+    .hero h1 {
+        font-size: clamp(2.5rem, 4vw, 4rem);
+        margin: 0 auto 4px;
+        line-height: 1.05;
+    }
+
+    .hero-tagline {
+        width: 100%;
+        text-align: center;
+        margin: -8px 0 0;
+        font-size: 1.6rem;
+        line-height: 1.2;
+    }
+
+    @media (max-width: 700px) {
+        .hero {
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+    }
+    </style>
+</head>
+
+<body>
+<header class="site-header">
+    <a class="brand" href="/">Moffat Bay Lodge</a>
+
+    <nav class="site-nav" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="/about.html">About Us</a>
+        <a href="/attractions.html">Attractions</a>
+        <a href="/contact.html">Contact Us</a>
+    </nav>
+
+    {% if session.get("customer_id") %}
+    <a class="auth-link" href="/logout">
+        Welcome, {{ session.get("first_name") }} | Logout
+    </a>
+    {% else %}
+    <a class="auth-link" href="/login">Login / Register</a>
+    {% endif %}
+</header>
+
+<div class="page-layout">
+    <main class="page-main">
+        <div class="lodge-grid">
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/CedarStrait.png" alt="Cedar Hollow Lodge">
+                <h2><a href="#">Cedar Hollow Lodge</a></h2>
+                <p>
+                    Tucked beneath old-growth cedars just a short walk from the pool,
+                    this lodge blends rustic timber charm with modern comfort.
+                    Wood-burning fireplaces, wraparound porches, and a view of the
+                    strait make this the island's coziest retreat.
+                </p>
+            </article>
+
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/WhistlingStrait.png" alt="Whistling Strait Inn">
+                <h2><a href="#">Whistling Strait Inn</a></h2>
+                <p>
+                    Perched on the bluffs overlooking Joviedsa's windswept northern
+                    coast, this inn is known for its floor-to-ceiling windows and
+                    front-row seats to passing orcas. Perfect for early risers who
+                    don't mind a stiff sea breeze.
+                </p>
+            </article>
+
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/Fembrook.png" alt="Fembrook Retreat">
+                <h2><a href="#">Fembrook Retreat</a></h2>
+                <p>
+                    Surrounded by moss-draped forest trails and a quiet freshwater
+                    creek, Fembrook is the island's go-to for hikers and hammock
+                    campers alike. Each cabin comes with its own outdoor cooking
+                    tub.
+                </p>
+            </article>
+
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/HarborLight.png" alt="Harbor Light Lodge">
+                <h2><a href="#">Harbor Light Lodge</a></h2>
+                <p>
+                    Set right in Joviedsa's small fishing village, this lodge puts
+                    guests steps from the docks, local seafood shacks, and the weekly
+                    farmers market. Rooms feature nautical decor and views of the
+                    working harbor.
+                </p>
+            </article>
+
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/Ravenwood.png" alt="Ravenwood Lodge">
+                <h2><a href="#">Ravenwood Lodge</a></h2>
+                <p>
+                    A dark, moodier option nestled deep in the island's interior
+                    forest, Ravenwood leans into rustic-luxury with stone fireplaces,
+                    exposed timber beams, and a reputation for spotting the resident
+                    raven flock at dusk.
+                </p>
+            </article>
+
+            <article class="lodge-card">
+                <img class="lodge-image" src="images/TidepoolBluff.png" alt="Tidepool Bluff Cottages">
+                <h2><a href="#">Tidepool Bluff Cottages</a></h2>
+                <p>
+                    A cluster of small, private cottages along the southern shoreline,
+                    each with a private path down to tide pools teeming with starfish
+                    and anemones. Popular with families and low-key beach lovers.
+                </p>
+            </article>
+
+        </div>
+    </main>
+
+    <aside class="sidebar" aria-label="Quick links">
+        <a class="side-btn side-btn--primary" href="/lodge">
+            <span>Book Your Stay</span>
+        </a>
+
+        <a class="side-btn" href="/login">
+            <span>Reservations</span>
+        </a>
+
+        <h2 class="sidebar-heading">Explore Joviedsa Island</h2>
+
+        <div class="tile-grid">
+            <a class="tile" href="/attractions.html">
+                <img src="/images/Hiking.png" alt="Hiking on Joviedsa Island">
+                <span class="tile-label">Hiking</span>
+            </a>
+
+            <a class="tile" href="/attractions.html">
+                <img src="/images/Whale Watching.png" alt="Whale watching">
+                <span class="tile-label">Whale Watching</span>
+            </a>
+
+            <a class="tile" href="/attractions.html">
+                <img src="/images/Kayaking.png" alt="Kayaking on the water">
+                <span class="tile-label">Kayaking</span>
+            </a>
+
+            <a class="tile" href="/attractions.html">
+                <img src="/images/Scuba Diving.png" alt="Scuba diving">
+                <span class="tile-label">Scuba Diving</span>
+            </a>
+        </div>
+
+        <a class="side-btn side-btn--tall" href="/attractions.html">
+            <span>View Attractions</span>
+        </a>
+    </aside>
+</div>
+
+<footer class="site-footer">
+    <a class="footer-brand" href="/">Moffat Bay Lodge</a>
+    <nav aria-label="Footer">
+        <a href="/about.html">About Us</a>
+        <a href="/attractions.html">Attractions</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/login">Reservations</a>
+    </nav>
+</footer>
+</body>
+</html>

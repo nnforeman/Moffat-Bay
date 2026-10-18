@@ -32,6 +32,13 @@ def home():
     return render_template("index.html")
 
 
+# ---------------------------------------------------------------- lodge
+@app.route("/lodge")
+@app.route("/lodge.html")
+def lodge_page():
+    return render_template("lodge.html")
+
+
 @app.route("/login")
 @app.route("/login.html")
 def login_page():
