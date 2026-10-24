@@ -137,10 +137,62 @@ def lodge_reservation():
         cur.close()
         db.close()
     
-    flash(f"Your reservation is confirmed! Your reservation number is {new_id}.")
-    return redirect(f"/lodge-reservation?lodge={lodge_id}")
+    return redirect(f"/reservation-summary/{new_id}")
     
-    
+# ---------------------------------------------------------------- reservation summary
+@app.route("/reservation-summary/<int:reservation_id>")
+@login_required
+def reservation_summary(reservation_id):
+
+    reservations = query("""
+        SELECT
+            r.reservation_id,
+            r.customer_id,
+            r.number_of_guests,
+            r.check_in_date,
+            r.check_out_date,
+            r.total_cost,
+
+            c.first_name,
+            c.last_name,
+
+            l.lodge_name,
+            l.lodge_description,
+            l.lodge_image,
+
+            rt.room_size,
+            rt.nightly_rate
+
+        FROM Reservation r
+
+        JOIN Customer c
+            ON r.customer_id = c.customer_id
+
+        JOIN Lodge l
+            ON r.lodge_id = l.lodge_id
+
+        JOIN Room_Type rt
+            ON r.room_type_id = rt.room_type_id
+
+        WHERE r.reservation_id = %s
+          AND r.customer_id = %s
+    """, (reservation_id, session["customer_id"]))
+
+    if not reservations:
+        abort(404)
+
+    reservation = reservations[0]
+
+    nights = (
+        reservation["check_out_date"]
+        - reservation["check_in_date"]
+    ).days
+
+    return render_template(
+        "reservation-summary.html",
+        reservation=reservation,
+        nights=nights
+    )    
 # ---------------------------------------------------------------- register
 @app.route("/register", methods=["POST"])
 def register():
