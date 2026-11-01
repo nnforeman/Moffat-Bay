@@ -199,7 +199,76 @@ def reservation_summary(reservation_id):
         "reservation-summary.html",
         reservation=reservation,
         nights=nights
-    )    
+    ) 
+
+# ---------------------------------------------------------------- contact us
+@app.route("/contact", methods=["GET", "POST"])
+@app.route("/contact.html", methods=["GET", "POST"])
+def contact_page():
+    if request.method == "GET":
+        return render_template(
+            "contact.html",
+            form={},
+            error=None,
+            success=request.args.get("success") == "1"
+        )
+
+    first = request.form.get("first_name", "").strip()
+    last = request.form.get("last_name", "").strip()
+    email = request.form.get("email", "").strip()
+    subject = request.form.get("subject", "").strip()
+    message = request.form.get("message", "").strip()
+
+    def fail(error):
+        return render_template(
+            "contact.html",
+            form=request.form,
+            error=error,
+            success=False
+        ), 400
+
+    if not all([first, last, email, subject, message]):
+        return fail("Please complete all required fields.")
+
+    if (
+        len(first) > 50 or len(last) > 50
+        or len(email) > 100 or len(subject) > 150
+        or len(message) > 5000
+    ):
+        return fail("One or more fields exceed the allowed length.")
+
+    if "@" not in email or "." not in email.split("@")[-1]:
+        return fail("Please enter a valid email address.")
+
+    allowed_subjects = {
+        "General Inquiry",
+        "Reservations",
+        "Lodge Information",
+        "Activities and Attractions",
+        "Other"
+    }
+
+    if subject not in allowed_subjects:
+        return fail("Please select a valid subject.")
+
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(
+            """
+            INSERT INTO Contact_Message
+            (first_name, last_name, email, subject, message)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (first, last, email, subject, message)
+        )
+        db.commit()
+    finally:
+        cursor.close()
+        db.close()
+
+    return redirect("/contact?success=1")   
 # ---------------------------------------------------------------- register
 @app.route("/register", methods=["POST"])
 def register():

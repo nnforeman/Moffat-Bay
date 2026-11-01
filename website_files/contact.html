@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Us - Moffat Bay Lodge</title>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        .contact-content {
+            max-width: 1050px;
+            margin: 35px auto;
+            padding: 0 25px 45px;
+        }
+
+        .contact-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .contact-heading h1 {
+            margin-bottom: 10px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 35px;
+            align-items: start;
+        }
+
+        .contact-info, .contact-form {
+            background: #fff;
+            border: 1px solid #d7d4ce;
+            padding: 28px;
+        }
+
+        .contact-info h2, .contact-form h2 {
+            margin-top: 0;
+            color: #294a3a;
+        }
+
+        .contact-info p {
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 6px;
+            padding: 11px;
+            border: 1px solid #aaa;
+            background: #fff;
+            font: inherit;
+            font-weight: normal;
+        }
+
+        .contact-form textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .contact-form button {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .contact-success {
+            background: #e8efe9;
+            border: 1px solid #294a3a;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .contact-error {
+            color: #9b2424;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 800px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="/">Moffat Bay Lodge</a>
+
+        <nav class="site-nav" aria-label="Main">
+            <a href="/">Home</a>
+            <a href="/about.html">About Us</a>
+            <a href="/attractions.html">Attractions</a>
+            <a href="/contact">Contact Us</a>
+        </nav>
+
+        {% if session.get("customer_id") %}
+        <a class="auth-link" href="/logout">
+            Welcome, {{ session.get("first_name") }} | Logout
+        </a>
+        {% else %}
+        <a class="auth-link" href="/login">Login / Register</a>
+        {% endif %}
+    </header>
+
+    <main class="contact-content">
+        <div class="contact-heading">
+            <h1>Contact Us</h1>
+            <p>Have a question about your stay? We'd love to hear from you.</p>
+        </div>
+
+        {% if success %}
+        <div class="contact-success" role="status">
+            Thank you for contacting Moffat Bay Lodge!
+            Your message has been received.
+        </div>
+        {% endif %}
+
+        <div class="contact-grid">
+            <section class="contact-info">
+                <h2>Get in Touch</h2>
+                <p>
+                    Whether you're planning your next getaway
+                    or have questions about our accommodations,
+                    we're happy to help.
+                </p>
+
+                <h3>Moffat Bay Lodge</h3>
+                <p>Joviedsa Island, San Juan Islands, Washington</p>
+
+                <h3>Reservations & Inquiries</h3>
+                <p>
+                    Use our contact form to send us a message.
+                    We'll respond as soon as possible.
+                </p>
+
+                <h3>Explore Our Lodges</h3>
+                <p>
+                    Interested in booking a stay? Browse our
+                    available lodges and room options.
+                </p>
+                <a class="btn btn--primary" href="/lodge">
+                    Book Your Stay
+                </a>
+            </section>
+
+            <section class="contact-form">
+                <h2>Send Us a Message</h2>
+
+                {% if error %}
+                <p class="contact-error" role="alert">{{ error }}</p>
+                {% endif %}
+
+                <form method="post" action="/contact">
+                    <label for="first_name">First Name *
+                        <input id="first_name" name="first_name"
+                               maxlength="50" required
+                               value="{{ form.get('first_name', '') }}">
+                    </label>
+
+                    <label for="last_name">Last Name *
+                        <input id="last_name" name="last_name"
+                               maxlength="50" required
+                               value="{{ form.get('last_name', '') }}">
+                    </label>
+
+                    <label for="email">Email Address *
+                        <input id="email" type="email" name="email"
+                               maxlength="100" required
+                               value="{{ form.get('email', '') }}">
+                    </label>
+
+                    <label for="subject">Subject *
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            {% for option in [
+                                'General Inquiry',
+                                'Reservations',
+                                'Lodge Information',
+                                'Activities and Attractions',
+                                'Other'
+                            ] %}
+                            <option value="{{ option }}"
+                                {% if form.get('subject') == option %}selected{% endif %}>
+                                {{ option }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label for="message">Message *
+                        <textarea id="message" name="message"
+                                  maxlength="5000" required
+                                  placeholder="How can we help you?">{{ form.get('message', '') }}</textarea>
+                    </label>
+
+                    <button class="btn btn--primary" type="submit">
+                        Send Message
+                    </button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <a class="footer-brand" href="/">Moffat Bay Lodge</a>
+        <nav aria-label="Footer">
+            <a href="/">Home</a>
+            <a href="/lodge">Lodges</a>
+            <a href="/attractions.html">Attractions</a>
+            <a href="/contact">Contact Us</a>
+        </nav>
+    </footer>
+</body>
+</html>

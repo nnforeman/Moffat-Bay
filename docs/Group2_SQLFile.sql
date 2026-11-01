@@ -89,3 +89,13 @@ VALUES
     (1, 1, 1, 1, 2, '2026-10-10', '2026-10-13', 360.00),
     (2, 2, 2, 2, 3, '2026-11-05', '2026-11-08', 405.00),
     (3, 3, 3, 3, 4, '2026-12-20', '2026-12-22', 300.00);
+
+CREATE TABLE IF NOT EXISTS Contact_Message (
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    subject VARCHAR(150) NOT NULL,
+    message TEXT NOT NULL,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
