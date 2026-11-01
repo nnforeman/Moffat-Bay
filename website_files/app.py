@@ -342,6 +342,45 @@ def logout():
     return redirect("/")
 
 
+# ---------------------------------------------------------------- reservation lookup
+@app.route("/reservation-lookup", methods=["GET", "POST"])
+@app.route("/reservation-lookup.html", methods=["GET", "POST"])
+def reservation_lookup():
+    if request.method == "GET":
+        return render_template("reservation-lookup.html")
+    
+    email = request.form.get("email", "").strip().lower()
+    try:
+        reservation_id = int(request.form.get("reservation_id", ""))
+    except ValueError:
+        return render_template("reservation-lookup.html", form=request.form,
+            error="Please enter a valid reservation ID (numbers only).")
+    
+    if not email:
+        return render_template("reservation-lookup.html", form=request.form,
+            error="Please enter the email address used for the reservation.")
+    
+    # Both the ID and the email must match, so no one can browse other guests' bookings
+    rows = query("""
+        SELECT r.reservation_id, r.number_of_guests, r.check_in_date, r.check_out_date,
+            r.total_cost, l.lodge_name, rt.room_size
+        FROM Reservation r
+        JOIN Customer c ON r.customer_id = c.customer_id
+        JOIN Lodge l ON r.lodge_id = l.lodge_id
+        JOIN Room_Type rt ON r.room_type_id = rt.room_type_id
+        WHERE r.reservation_id = %s AND LOWER(c.email) = %s
+    """, (reservation_id, email))
+    
+    if not rows:
+        return render_template("reservation-lookup.html", form=request.form,
+            error="We couldn't find a reservation with that ID and email. Please check both and try again.")
+    
+    reservation = rows[0]
+    nights = (reservation["check_out_date"] - reservation["check_in_date"]).days
+    return render_template("reservation-lookup.html", form=request.form,
+        reservation=reservation, nights=nights)
+
+
 # ---------------------------------------------------------------- other website files
 # Serves styles.css, images and the other pages that sit next to app.py (but never app.py or .env)
 @app.route("/<path:filename>")

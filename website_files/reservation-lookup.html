@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moffat Bay Lodge | Find Your Reservation</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+	.lookup-grid {
+		display: grid;
+		grid-template-columns: minmax(220px, 1fr) minmax(0, 1.6fr);
+		gap: 2rem;
+		align-items: start;
+	}
+	.lookup-form .form-row { flex-direction: column; align-items: stretch; gap: 0.35rem; }
+	.lookup-form .form-row label { flex: none; text-align: left; }
+	.lookup-form .btn { width: 100%; }
+	.lookup-message { margin: 0; color: var(--ink-soft); }
+	.lookup-message--error { color: #a12d2d; }
+	.detail-list strong { color: var(--ink); }
+	@media (max-width: 700px) {
+		.lookup-grid { grid-template-columns: 1fr; }
+	}
+  </style>
+</head>
+
+<body>
+	<header class="site-header">
+		<a class="brand" href="/">Moffat Bay Lodge</a>
+
+		<nav class="site-nav" aria-label="Main">
+		<a href="/">Home</a>
+		<a href="/about.html">About Us</a>
+		<a href="/attractions.html">Attractions</a>
+		<a href="/contact.html">Contact Us</a>
+		</nav>
+
+		{% if session.get("customer_id") %}
+			<a class="auth-link" href="/logout">
+				Welcome, {{ session.get("first_name") }} | Logout
+			</a>
+		{% else %}
+			<a class="auth-link" href="/login">Login / Register</a>
+		{% endif %}
+	</header>
+	
+	<div class="page-layout">
+		
+		<main class="page-main">
+			<h1 class="page-title">Find Your Reservation</h1>
+			
+			<div class="lookup-grid">
+			
+				<form class="lookup-form" method="post" action="/reservation-lookup">
+					<div class="form-row">
+						<label for="reservation_id">Reservation ID</label>
+						<input id="reservation_id" type="number" name="reservation_id" min="1" required
+							value="{{ form.get('reservation_id', '') if form else '' }}">
+					</div>
+					
+					<div class="form-row">
+						<label for="email">Email</label>
+						<input id="email" type="email" name="email" required
+							value="{{ form.get('email', '') if form else '' }}">
+					</div>
+					
+					<button class="btn btn--primary" type="submit">Find Reservation</button>
+				</form>
+				
+				<section class="card" aria-live="polite" aria-label="Reservation details">
+					{% if reservation %}
+						<ul class="detail-list">
+							<li><strong>Lodge Name:</strong> {{ reservation.lodge_name }}</li>
+							<li><strong>Dates Reserved:</strong>
+								{{ reservation.check_in_date.strftime('%b %d, %Y') }} to
+								{{ reservation.check_out_date.strftime('%b %d, %Y') }}
+								({{ nights }} night{{ '' if nights == 1 else 's' }})
+							</li>
+							<li><strong>Room Size:</strong> {{ reservation.room_size }}</li>
+							<li><strong>Number of Guests:</strong> {{ reservation.number_of_guests }}</li>
+							<li><strong>Total:</strong> ${{ '%.2f'|format(reservation.total_cost) }}</li>
+						</ul>
+					{% elif error %}
+						<p class="lookup-message lookup-message--error">{{ error }}</p>
+					{% else %}
+						<p class="lookup-message">Enter your reservation ID and the email you booked with to see your reservation details.</p>
+					{% endif %}
+				</section>
+				
+			</div>
+		</main>
+		
+		<aside class="sidebar" aria-label="Quick links">
+			<a class="side-btn side-btn--primary" href="{{ '/lodge' if session.get('customer_id') else '/login' }}">
+				<span>Book Your Stay</span>
+			</a>
+
+		<a class="side-btn" href="/reservation-lookup">
+			<span>Reservations</span>
+		</a>
+
+		<h2 class="sidebar-heading">Explore Joviedsa Island</h2>
+
+		<div class="tile-grid">
+			<a class="tile" href="/attractions.html">
+			<img src="/images/Hiking.png" alt="Hiking on Joviedsa Island">
+			<span class="tile-label">Hiking</span>
+			</a>
+
+			<a class="tile" href="/attractions.html">
+			<img src="/images/Whale Watching.png" alt="Whale watching">
+			<span class="tile-label">Whale Watching</span>
+			</a>
+
+			<a class="tile" href="/attractions.html">
+			<img src="/images/Kayaking.png" alt="Kayaking on the water">
+			<span class="tile-label">Kayaking</span>
+			</a>
+
+			<a class="tile" href="/attractions.html">
+			<img src="/images/Scuba Diving.png" alt="Scuba diving">
+			<span class="tile-label">Scuba Diving</span>
+			</a>
+		</div>
+
+		<a class="side-btn side-btn--tall" href="/attractions.html">
+			<span>View Attractions</span>
+		</a>
+		</aside>
+	</div>
+
+	<footer class="site-footer">
+		<a class="footer-brand" href="/">Moffat Bay Lodge</a>
+		<nav aria-label="Footer">
+			<a href="/about.html">About Us</a>
+			<a href="/attractions.html">Attractions</a>
+			<a href="/contact.html">Contact Us</a>
+			<a href="/reservation-lookup">Reservations</a>
+		</nav>
+	</footer>
+</body>
+</html>
