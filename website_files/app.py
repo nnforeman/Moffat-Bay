@@ -94,6 +94,13 @@ def render_booking(lodge_id, error=None):
         today=date.today().isoformat(), error=error, form=request.form)
 
 
+# ---------------------------------------------------------------- Attractions
+@app.route("/attractions")
+@app.route("/attractions.html")
+def attractions_page():
+    return render_template("attractions.html")
+
+
 @app.route("/lodge-reservation", methods=["GET", "POST"])
 @app.route("/lodge-reservation.html", methods=["GET", "POST"])
 @login_required

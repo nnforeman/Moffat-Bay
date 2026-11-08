@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Moffat Bay Lodge | Attractions</title>
+
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        /* Main page layout */
+        .page-layout {
+            max-width: none;
+            padding: 0 1.5rem 2rem 0;
+            gap: 2rem;
+            grid-template-columns: minmax(0, 1fr) var(--sidebar-w);
+        }
+
+        .page-main {
+            min-width: 0;
+            width: 100%;
+        }
+
+        /* Page heading */
+        .attractions-heading {
+            text-align: center;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: normal;
+            line-height: 1.2;
+            margin: 0.5rem 0 0.5rem;
+        }
+
+        .attractions-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: normal;
+            margin: 0 0 1.5rem;
+            color: var(--ink-soft);
+        }
+
+        /* Attraction card grid */
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        /* Individual attraction card */
+        .attraction-card {
+            min-width: 0;
+            background: transparent;
+            border: none;
+            overflow: hidden;
+        }
+
+        /* Attraction picture area */
+        .attraction-picture {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            overflow: hidden;
+            background: transparent;
+            border: none;
+        }
+
+        /* Attraction images */
+        .attraction-picture img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            border: none;
+        }
+
+        /* Attraction name at top center */
+        .attraction-name {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1;
+
+            margin: 0;
+            padding: 0.55rem;
+
+            background: rgba(15, 15, 15, 0.65);
+            color: white;
+
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: normal;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .attraction-card:hover .attraction-name {
+            background: rgba(15, 15, 15, 0.65);
+        }
+
+        /* Attraction description */
+        .attraction-description {
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0.75rem;
+            margin: 0;
+
+            background: rgba(15, 15, 15, 0.65);
+            color: white;
+
+            font-size: 0.9rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            padding-top: 2rem;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Site header -->
+<header class="site-header">
+
+    <a class="brand" href="/">Moffat Bay Lodge</a>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/about.html">About Us</a>
+        <a href="/attractions.html" aria-current="page">Attractions</a>
+        <a href="/contact.html">Contact Us</a>
+    </nav>
+
+    {% if session.get("customer_id") %}
+    <a class="auth-link" href="/logout">
+        Welcome, {{ session.get("first_name") }} | Logout
+    </a>
+    {% else %}
+    <a class="auth-link" href="/login">Login / Register</a>
+    {% endif %}
+
+</header>
+
+
+<!-- Main content and sidebar -->
+<div class="page-layout">
+
+    <!-- Attractions content -->
+    <main class="page-main">
+
+        <h1 class="attractions-heading">
+            Moffat Bay Lodge Attractions
+        </h1>
+
+        <h2 class="attractions-subtitle">
+            Explore Joviedsa Island
+        </h2>
+
+
+        <!-- Attraction cards -->
+        <section class="attractions-grid" aria-label="Island attractions">
+
+
+            <!-- Hiking -->
+            <article class="attraction-card">
+
+                <div class="attraction-picture">
+
+                    <img
+                            src="/images/Hiking.png"
+                            alt="Hiking on Joviedsa Island"
+                    >
+
+                    <h3 class="attraction-name">
+                        Hiking
+                    </h3>
+
+                </div>
+
+                <p class="attraction-description">
+                    Explore scenic island trails through forests,
+                    along rocky coastlines, and across peaceful overlooks.
+                </p>
+
+            </article>
+
+
+            <!-- Whale Watching -->
+            <article class="attraction-card">
+
+                <div class="attraction-picture">
+
+                    <img
+                            src="/images/Whale Watching.png"
+                            alt="Whale watching"
+                    >
+
+                    <h3 class="attraction-name">
+                        Whale Watching
+                    </h3>
+
+                </div>
+
+                <p class="attraction-description">
+                    Spot whales and other marine wildlife in the
+                    beautiful waters surrounding Joviedsa Island.
+                </p>
+
+            </article>
+
+
+            <!-- Kayaking -->
+            <article class="attraction-card">
+
+                <div class="attraction-picture">
+
+                    <img
+                            src="/images/Kayaking.png"
+                            alt="Kayaking on the water"
+                    >
+
+                    <h3 class="attraction-name">
+                        Kayaking
+                    </h3>
+
+                </div>
+
+                <p class="attraction-description">
+                    Paddle along the island's peaceful shoreline
+                    and enjoy the surrounding natural scenery.
+                </p>
+
+            </article>
+
+
+            <!-- Scuba Diving -->
+            <article class="attraction-card">
+
+                <div class="attraction-picture">
+
+                    <img
+                            src="/images/Scuba Diving.png"
+                            alt="Scuba diving"
+                    >
+
+                    <h3 class="attraction-name">
+                        Scuba Diving
+                    </h3>
+
+                </div>
+
+                <p class="attraction-description">
+                    Discover the underwater environment and
+                    experience the island from a different perspective.
+                </p>
+
+            </article>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- Right sidebar: only quick-link buttons -->
+    <aside class="sidebar" aria-label="Quick links">
+
+        <a
+                class="side-btn side-btn--primary"
+                href="{{ '/lodge' if session.get('customer_id') else '/login' }}"
+        >
+            <span>Book Your Stay</span>
+        </a>
+
+        <a class="side-btn" href="/reservation-lookup">
+            <span>Reservations</span>
+        </a>
+
+    </aside>
+
+</div>
+
+
+<!-- Site footer -->
+<footer class="site-footer">
+
+    <a class="footer-brand" href="/">
+        Moffat Bay Lodge
+    </a>
+
+    <nav aria-label="Footer navigation">
+        <a href="/about.html">About Us</a>
+        <a href="/attractions.html">Attractions</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/reservation-lookup">Reservations</a>
+    </nav>
+
+</footer>
+
+</body>
+</html>
