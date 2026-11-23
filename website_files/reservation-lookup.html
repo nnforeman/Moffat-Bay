@@ -18,6 +18,22 @@
 	.lookup-message { margin: 0; color: var(--ink-soft); }
 	.lookup-message--error { color: #a12d2d; }
 	.detail-list strong { color: var(--ink); }
+	.reservation-list { margin: 0; padding: 0; list-style: none; }
+	.reservation-list li { border-bottom: 1px solid var(--line); }
+	.reservation-list li:last-child { border-bottom: 0; }
+	.reservation-list form { margin: 0; }
+	.res-link {
+		display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+		width: 100%; padding: 0.75rem 0.5rem; border: 0; background: none;
+		font: inherit; text-align: left; color: var(--link-on-light); cursor: pointer;
+	}
+	.res-link:hover { background: #ecefe9; }
+	.res-link small { display: block; color: var(--ink-soft); }
+	.res-link::after { content: ">"; font-family: var(--font-sans); font-size: 1.3rem; color: var(--ink-soft); }
+	.back-link {
+		margin: 0 0 0.5rem; padding: 0; border: 0; background: none;
+		font: inherit; color: var(--link-on-light); text-decoration: underline; cursor: pointer;
+	}
 	@media (max-width: 700px) {
 		.lookup-grid { grid-template-columns: 1fr; }
 	}
@@ -53,8 +69,8 @@
 			
 				<form class="lookup-form" method="post" action="/reservation-lookup">
 					<div class="form-row">
-						<label for="reservation_id">Reservation ID</label>
-						<input id="reservation_id" type="number" name="reservation_id" min="1" required
+						<label for="reservation_id">Reservation ID <small>(optional)</small></label>
+						<input id="reservation_id" type="number" name="reservation_id" min="1"
 							value="{{ form.get('reservation_id', '') if form else '' }}">
 					</div>
 					
@@ -69,6 +85,10 @@
 				
 				<section class="card" aria-live="polite" aria-label="Reservation details">
 					{% if reservation %}
+						<form method="post" action="/reservation-lookup">
+							<input type="hidden" name="email" value="{{ form.get('email', '') if form else '' }}">
+							<button class="back-link" type="submit">&lt; All my reservations</button>
+						</form>
 						<ul class="detail-list">
 							<li><strong>Lodge Name:</strong> {{ reservation.lodge_name }}</li>
 							<li><strong>Dates Reserved:</strong>
@@ -80,10 +100,31 @@
 							<li><strong>Number of Guests:</strong> {{ reservation.number_of_guests }}</li>
 							<li><strong>Total:</strong> ${{ '%.2f'|format(reservation.total_cost) }}</li>
 						</ul>
+					{% elif reservations %}
+						<ul class="reservation-list">
+							{% for r in reservations %}
+							<li>
+								<form method="post" action="/reservation-lookup">
+									<input type="hidden" name="email" value="{{ form.get('email', '') }}">
+									<input type="hidden" name="reservation_id" value="{{ r.reservation_id }}">
+									<button class="res-link" type="submit">
+										<span>
+											<strong>#{{ r.reservation_id }} &ndash; {{ r.lodge_name }}</strong>
+											<small>
+												{{ r.check_in_date.strftime('%b %d, %Y') }} to
+												{{ r.check_out_date.strftime('%b %d, %Y') }}
+												&middot; ${{ '%.2f'|format(r.total_cost) }}
+											</small>
+										</span>
+									</button>
+								</form>
+							</li>
+							{% endfor %}
+						</ul>
 					{% elif error %}
 						<p class="lookup-message lookup-message--error">{{ error }}</p>
 					{% else %}
-						<p class="lookup-message">Enter your reservation ID and the email you booked with to see your reservation details.</p>
+						<p class="lookup-message">Enter the email you booked with to see all your reservations, or add a reservation ID to go straight to one.</p>
 					{% endif %}
 				</section>
 				

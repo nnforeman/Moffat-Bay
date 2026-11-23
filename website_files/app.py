@@ -357,15 +357,33 @@ def reservation_lookup():
         return render_template("reservation-lookup.html")
     
     email = request.form.get("email", "").strip().lower()
+    
+    if not email:
+        return render_template("reservation-lookup.html", form=request.form,
+            error="Please enter the email address used for the reservation.")
+    
+    # Email only: show every reservation for that email
+    if not request.form.get("reservation_id", "").strip():
+        rows = query("""
+            SELECT r.reservation_id, r.check_in_date, r.check_out_date,
+            r.total_cost, l.lodge_name
+            FROM Reservation r
+            JOIN Customer c ON r.customer_id = c.customer_id
+            JOIN Lodge l ON r.lodge_id = l.lodge_id
+            WHERE LOWER(c.email) = %s
+            ORDER BY r.check_in_date DESC
+        """, (email,))
+        if not rows:
+            return render_template("reservation-lookup.html", form=request.form,
+                error="We couldn't find any reservations for that email address.")
+        return render_template("reservation-lookup.html", form=request.form,
+            reservations=rows)
+    
     try:
         reservation_id = int(request.form.get("reservation_id", ""))
     except ValueError:
         return render_template("reservation-lookup.html", form=request.form,
             error="Please enter a valid reservation ID (numbers only).")
-    
-    if not email:
-        return render_template("reservation-lookup.html", form=request.form,
-            error="Please enter the email address used for the reservation.")
     
     # Both the ID and the email must match, so no one can browse other guests' bookings
     rows = query("""
